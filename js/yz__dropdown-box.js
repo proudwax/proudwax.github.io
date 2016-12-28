@@ -1,37 +1,7 @@
-"use strict";
-
-var dropdown = (function(block){
-
-    function throttle(func, ms) {
-        var isThrottled = false,
-            savedArgs,
-            savedThis;
-
-        function wrapper() {
-            if (isThrottled) {
-                savedArgs = arguments;
-                savedThis = this;
-                return;
-            }
-
-            func.apply(this, arguments);
-
-            isThrottled = true;
-
-            setTimeout(function() {
-                isThrottled = false;
-                if (savedArgs) {
-                    wrapper.apply(savedThis, savedArgs);
-                    savedArgs = savedThis = null;
-                }
-            }, ms);
-        }
-        return wrapper;
-    }
-
+modules.define('dropdown-box', ['throttle'], function(provide, Throttle) {
     function getElemPosition(nodeList, elemList){
         var elemPosition = 0,
-            elemCurrent = elemList.previousElementSibling;
+        elemCurrent = elemList.previousElementSibling;
 
         for(var i = 0; i < nodeList.length; i++){
             if(elemCurrent){
@@ -44,8 +14,26 @@ var dropdown = (function(block){
         return elemPosition;
     }
 
+    function renderNotification(notificationContent){
+        var notificationNode = document.createElement('div');
+        notificationNode.className = 'service__notification';
+        notificationNode.innerHTML = notificationContent;
+
+        notificationNode.querySelector('.service__bnt').addEventListener('click', function(e) {
+            e.preventDefault();
+
+            $(function() {
+                $('#modal-call').bPopup({
+                    modalClose: true
+                });
+            });
+        });
+
+        return notificationNode;
+    }
+
     function getNotificationPosition(elemPosition, elemsInRow, countNodeList){
-            // выводить notification нужно после последнего эле-та в строке.
+        // выводить notification нужно после последнего эле-та в строке.
         var param = (elemPosition % elemsInRow) ? (elemPosition % elemsInRow) : elemsInRow;
         var notPosition = elemPosition + (elemsInRow - param) - 1;
 
@@ -60,24 +48,6 @@ var dropdown = (function(block){
         }else{
             return 3;
         }
-    }
-
-    function renderNotification(notificationContent){
-        var notificationNode = document.createElement('div');
-            notificationNode.className = 'service__notification';
-            notificationNode.innerHTML = notificationContent;
-
-        notificationNode.querySelector('.service__bnt').addEventListener('click', function(e) {
-            e.preventDefault();
-
-            $(function() {
-                $('#modal-call').bPopup({
-                    modalClose: true
-                });
-            });
-        });
-
-        return notificationNode;
     }
 
     function removeNotification(){
@@ -113,10 +83,9 @@ var dropdown = (function(block){
     }
 
     var ya_dropdown = {};
-        ya_dropdown.listItems = document.querySelectorAll('.service__item');
-        ya_dropdown.countList = ya_dropdown.listItems.length;
-        ya_dropdown.windowWidth = window.innerWidth;
-
+    ya_dropdown.listItems = document.querySelectorAll('.service__item');
+    ya_dropdown.countList = ya_dropdown.listItems.length;
+    ya_dropdown.windowWidth = window.innerWidth;
 
     ya_dropdown.listItems.forEach(function(item, index){
         item.addEventListener('click', function(e){
@@ -124,7 +93,7 @@ var dropdown = (function(block){
         });
     });
 
-    throttle(window.addEventListener('resize', function(e){
+    Throttle(window.addEventListener('resize', function(e){
         if(ya_dropdown.windowWidth != window.innerWidth){
             removeNotification();
 
@@ -136,6 +105,5 @@ var dropdown = (function(block){
         }
     }), 300);
 
-    return block;
-
-}(dropdown || {}));
+    provide();
+});
