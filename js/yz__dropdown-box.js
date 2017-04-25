@@ -22,11 +22,11 @@ modules.define('dropdown-box', ['throttle'], function(provide, Throttle) {
         notificationNode.querySelector('.service__bnt').addEventListener('click', function(e) {
             e.preventDefault();
 
-            $(function() {
-                $('#modal-call').bPopup({
-                    modalClose: true
-                });
-            });
+            // $(function() {
+            //     $('#modal-call').bPopup({
+            //         modalClose: true
+            //     });
+            // });
         });
 
         return notificationNode;
