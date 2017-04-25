@@ -20,7 +20,7 @@ modules.define('dropdown-box', ['throttle'], function(provide, Throttle) {
         notificationNode.innerHTML = notificationContent;
 
         notificationNode.querySelector('.service__bnt').addEventListener('click', function(e) {
-            e.preventDefault();
+            // e.preventDefault();
 
             // $(function() {
             //     $('#modal-call').bPopup({
